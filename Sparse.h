@@ -1,7 +1,9 @@
 #include <vector>
+#include <cmath> 
 #include <algorithm> 
 #include <stdlib.h> 
 #include <stdio.h> 
+#include <iostream> 
  
 
 class Triplets
@@ -13,57 +15,68 @@ class Triplets
         int* m_IA ; 
         int* m_IJ ; 
         float* m_values ;
-        void ranging() ; 
+         
     public: 
+        Triplets() {} ;
         Triplets(int m_num_rows, int m_num_cols) ;  
         void add(int i , int j , float value) ; 
         void settriplet() ;
         int* get_m_IA() {return m_IA ; } ;
         int* get_m_IJ() {return m_IJ ; } ;
         float* get_m_values(){return m_values ; } ; 
+        void ranging() ;
+        void show() ;
 };
 
 
 class SparseMatrix
 {
     private: 
-        int m_number_rows  , m_number_columns ; 
-        Triplets Triplet ;  
+        int m_num_rows  , m_num_cols ; 
+        Triplets* Triplet ;  
         float* m_values ; 
-        float* m_IA ; 
-        float* m_IJ ; 
+        int* m_IA ; 
+        int* m_IJ ; 
     public: 
         SparseMatrix(int number_rows , int number_columns) ; 
         void add_value(int i , int j , float value) ; 
         void set_matrix() ; 
         float* vector_mult(float* vect) ;
-
+        int get_rows_number() {return m_num_rows ;} ;
+        int get_cols_number() {return m_num_cols ;} ; 
 };
 
-class Solver
+class CG_solver 
 {
-protected : 
+private: 
   SparseMatrix* m_A ;
   float* m_X ;
   float* m_b ; 
+  float tolerance ; 
+  int num_iteration_max ; 
 public :
-  Solver(SparseMatrix* A , float* m_b ) ;
-  virtual void solve() ;
-  virtual float* get_solution() ; 
+  CG_solver(SparseMatrix* , float* ) ;
+  void solve() ;
+  float* get_solution(){return m_b ;} ;
+  
 };
-
-class CG_solver : public Solver 
+class BICGSTAB_solver 
 {
-public :
-  CG_solver(SparseMatrix* A, float* m_b) ;
-  virtual void solve() ;
-};
-
-class BICGSTAB_solver : public Solver
-{
+private: 
+  SparseMatrix* m_A ;
+  float* m_X ;
+  float* m_b ; 
+  float tolerance ; 
+  int num_iteration_max ; 
 public:
-  BICGSTAB_solver() ;
-  virtual void solve() ; 
+  BICGSTAB_solver(SparseMatrix* , float* ) ;
+  void solve() ;
+  float* get_solution(){return m_b ;} ; 
 };
+
+float dot_product(int, float* , float*) ; 
+float* vect_sum(int, float* , float*) ; 
+float* dot_real_vect(int , float*) ; 
+float norm(int,float*) ; 
 
 
