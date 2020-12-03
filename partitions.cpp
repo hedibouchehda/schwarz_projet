@@ -1,5 +1,5 @@
   #include "partitions.h"
-
+  #include <string>
 
   using namespace std ; 
 
@@ -62,25 +62,33 @@
 
   void build_meshes(string input)
   {
+
+
+      //les conditions aux bors 
+      int boundary_physical , boundary_fictional, inner_point ;  
+      inner_point = 0 ;
+
       ifstream read_input(input.c_str()) ;
       int num_procs ; 
       int num_cols ; 
       int num_lines ; 
       int recovery_size ; 
-      string cut_off_plan ;
+      string label ;
       
       if(read_input)
       {
-          read_input>>cut_off_plan ; 
+          read_input>>label ; 
           read_input>>num_lines ; 
-          read_input>>cut_off_plan ;
+          read_input>>label ;
           read_input>>num_cols ; 
-          read_input>>cut_off_plan ; 
+          read_input>>label ; 
           read_input>>num_procs ; 
-          read_input>>cut_off_plan ; 
+          read_input>>label ; 
           read_input>>recovery_size ; 
-          read_input>>cut_off_plan ; 
-          read_input>>cut_off_plan ;
+          read_input>>label ; 
+          read_input>>boundary_physical;
+          read_input>>label ;
+          read_input>>boundary_fictional ; 
       } 
       else
       {
@@ -94,8 +102,7 @@
       int* boundary_global_indices=new int[2*num_procs] ; 
       
       string proc  ; 
-      if (cut_off_plan=="v") 
-      {
+     
           partitions(num_cols, num_procs,recovery_size, boundary_global_indices) ;
           int start , end ; 
           for (int i=0 ; i<num_procs ; i++) 
@@ -108,25 +115,38 @@
                   end = boundary_global_indices[i+2] ; 
                   proc= "proc_num_"+to_string(i)+".In" ;
                   ofstream write_mesh(proc.c_str()) ;
-                  write_mesh<<"nlines"<<endl ; 
-                  write_mesh<<num_lines<<endl ; 
-                  write_mesh<<"start"<<endl ;
-                  write_mesh<<start<<endl ;
-                  write_mesh<<"end"<<endl ;
-                  write_mesh<<end<<endl ; 
+                  write_mesh<<num_lines*(end-start+1)<<endl ; 
                   for (int j=start ; j<=end ; j++)
                   {
-                    for (int k=0 ; k<num_lines ; k++)
+                    if (j==start) //bord gauche physique
                     {
-                      write_mesh<<j*delta_x<<" "<<k*delta_y<<endl ; 
+                      for (int k=0 ; k<num_lines; k++) 
+                        {write_mesh<<j*delta_x<<" "<<k*delta_y<<" "<<0<<" "<<k+j*num_lines<<" "<<boundary_physical<<" "<<0<<endl ;}     
                     }
-                  }
-                  write_mesh<<"**************************"<<endl ; 
-                  write_mesh<<"R"<<endl ;
-                for (int j=0 ; j<num_lines ; j++)
-                {
-                write_mesh<<(column_to_send_right-start)*num_lines+j<<endl ; 
-                }
+                    else if (j==end) //bord de droite fictif
+                    {
+                      for (int k=0 ; k<num_lines;k++) 
+                        {if (k==0){write_mesh<<j*delta_x<<" "<<k*delta_y<<" "<<0<<" "<<k+j*num_lines<<boundary_physical<<" "<<0<<endl ;}//bord haut
+                          else if (k==num_lines-1){write_mesh<<j*delta_x<<" "<<0<<" "<<k*delta_y<<" "<<boundary_physical<<4<<" "<<0<<endl ;}//bord bas
+                          else {write_mesh<<j*delta_x<<" "<<k*delta_y<<" "<<0<<" "<<k+j*num_lines<<boundary_fictional<<" "<<0<<endl ;}} 
+                    }
+                    else if (j==column_to_send_right) 
+                    {
+                      for (int k=0 ; k<num_lines;k++) 
+                        {if (k==0){write_mesh<<j*delta_x<<" "<<k*delta_y<<" "<<0<<" "<<k+j*num_lines<<boundary_physical<<" "<<1<<" "<<i+1<<endl ;}//bord haut
+                          else if (k==num_lines-1){write_mesh<<j*delta_x<<" "<<0<<" "<<k*delta_y<<" "<<k+j*num_lines<<boundary_physical<<" "<<1<<" "<<i+1<<endl ;}//bord bas
+                          else {write_mesh<<j*delta_x<<" "<<k*delta_y<<" "<<0<<" "<<k+j*num_lines<<inner_point<<" "<<1<<" "<<i+1<<endl ;}}  
+                    }
+                    else 
+                    {
+                        for (int k=0 ; k<num_lines;k++)
+                        {
+                          {if (k==0){write_mesh<<j*delta_x<<" "<<k*delta_y<<" "<<0<<" "<<k+j*num_lines<<boundary_physical<<" "<<0<<endl ;}//bord haut
+                          else if (k==num_lines-1){write_mesh<<j*delta_x<<" "<<0<<" "<<k*delta_y<<" "<<k+j*num_lines<<boundary_physical<<" "<<0<<endl ;}//bord haut
+                          else {write_mesh<<j*delta_x<<" "<<k*delta_y<<" "<<0<<" "<<k+j*num_lines<<inner_point<<" "<<0<<endl ;}} 
+                        }
+                    }
+                   }
               }
               
               else if (i==num_procs-1)
@@ -137,25 +157,39 @@
                   end = boundary_global_indices[2*(i-1)+3] ;
                   proc =  "proc_num_"+ to_string(i) + ".In" ; 
                   ofstream write_mesh(proc.c_str()) ;
-                  write_mesh<<"nlines"<<endl ; 
-                  write_mesh<<num_lines<<endl ; 
-                  write_mesh<<"start"<<endl ;
-                  write_mesh<<start<<endl ;
-                  write_mesh<<"end"<<endl ;
-                  write_mesh<<end<<endl ; 
+                   write_mesh<<num_lines*(end-start+1)<<endl ; 
                   for (int j=start ; j<=end ; j++)
                   {
-                    for (int k=0 ; k<num_lines ; k++)
+                    if (j==start) //bord gauche fictif
                     {
-                      write_mesh<<k*delta_y<<" "<<j*delta_x<<endl ; 
+                      for (int k=0 ; k<num_lines; k++) 
+                        {if (k==0){write_mesh<<j*delta_x<<" "<<k*delta_y<<" "<<0<<" "<<k+j*num_lines<<boundary_physical<<" "<<0<<endl ;}//bord haut
+                          else if (k==num_lines-1){write_mesh<<j*delta_x<<" "<<k*delta_y<<" "<<0<<" "<<boundary_physical<<4<<" "<<0<<endl ;}//bord bas
+                          else {write_mesh<<j*delta_x<<" "<<k*delta_y<<" "<<0<<" "<<k+j*num_lines<<boundary_fictional<<" "<<0<<endl ;}}     
                     }
-                  }
-                  write_mesh<<"************************************************"<<endl ;
-                  write_mesh<<"L"<<endl ; 
-                  for (int j=0 ; j<num_lines ; j++)
-                  {
-                    write_mesh <<(column_to_send_left-start)*num_lines+j<<endl ; 
-                  }	
+                    else if (j==end) //bord de droite physique
+                    {
+                      for (int k=0 ; k<num_lines;k++) 
+                        {write_mesh<<j*delta_x<<" "<<k*delta_y<<" "<<0<<" "<<k+j*num_lines<<boundary_physical<<" "<<0<<endl ;}   
+                    }
+                    else if (j==column_to_send_left) 
+                    {
+                      for (int k=0 ; k<num_lines;k++) 
+                        {if (k==0){write_mesh<<j*delta_x<<" "<<k*delta_y<<" "<<0<<" "<<k+j*num_lines<<boundary_physical<<" "<<1<<" "<<i-1<<endl ;}//bord haut
+                          else if (k==num_lines-1){write_mesh<<j*delta_x<<" "<<0<<" "<<k*delta_y<<" "<<k+j*num_lines<<boundary_physical<<" "<<1<<" "<<i-1<<endl ;}//bord haut
+                          else {write_mesh<<j*delta_x<<" "<<k*delta_y<<" "<<0<<" "<<k+j*num_lines<<inner_point<<" "<<1<<" "<<i-1<<endl ;}}  
+                    }
+                    else 
+                    {
+                        for (int k=0 ; k<num_lines;k++)
+                
+                          {if (k==0){write_mesh<<j*delta_x<<" "<<k*delta_y<<" "<<0<<" "<<k+j*num_lines<<boundary_physical<<" "<<0<<endl ;}//bord haut
+                          else if (k==num_lines-1){write_mesh<<j*delta_x<<" "<<k*delta_y<<" "<<0<<" "<<k+j*num_lines<<boundary_physical<<" "<<0<<endl ;}//bord bas
+                          else {write_mesh<<j*delta_x<<" "<<k*delta_y<<" "<<0<<" "<<k+j*num_lines<<inner_point<<" "<<0<<endl ;} }
+            
+                    }
+                   
+              }
               }
               
         else
@@ -165,40 +199,56 @@
           start = boundary_global_indices[2*(i-1)+1] ;
           column_to_send_left = boundary_global_indices[2*(i-1)+2] ;
           column_to_send_right = boundary_global_indices[2*(i-1)+3] ;
-          end = boundary_global_indices[2*(i-1)+3] ;
+          end = boundary_global_indices[2*(i-1)+4] ;
           proc= "proc_num_" + to_string(i) + ".In" ;
           ofstream write_mesh(proc.c_str()) ;
-          write_mesh<<"nlines"<<endl ; 
-          write_mesh<<num_lines<<endl ; 
-          write_mesh<<"start"<<endl ; 
-          write_mesh<<start<<endl ;
-          write_mesh<<"end"<<endl ;
-          write_mesh<<end<<endl ;
           for (int j=start ; j<=end ; j++)
-          {
-            for (int k=0 ; k<num_lines ; k++)
-            {
-              write_mesh<<k*delta_y<<" "<<j*delta_x<<endl ; 
-            }
-          }
-          write_mesh<<"************************************************************"<<endl ;
-          write_mesh<<"L"<<endl ;
-          for (int j=0 ; j< num_lines ; j++)
-          {
-            write_mesh<<(column_to_send_left-start)*num_lines+j<<endl ; 
-          }
-          write_mesh<<"************************************************************"<<endl ;
-          write_mesh<<"R"<<endl ;
-          for (int j=0 ; j<num_lines ; j++)
-          {
-            write_mesh<<(column_to_send_right-start)*num_lines+j<<endl ; 
-          }
-                              
-        }
+              {
+                    if (j==start) //bord gauche fictif
+                    {
+                      for (int k=0 ; k<num_lines; k++) 
+                        {if (k==0){write_mesh<<j*delta_x<<" "<<k*delta_y<<" "<<0<<" "<<k+j*num_lines<<boundary_physical<<" "<<0<<endl ;}//bord haut
+                          else if (k==num_lines-1){write_mesh<<j*delta_x<<" "<<k*delta_y<<" "<<0<<" "<<boundary_physical<<4<<" "<<0<<endl ;}//bord bas
+                          else {write_mesh<<j*delta_x<<" "<<k*delta_y<<" "<<0<<" "<<k+j*num_lines<<boundary_fictional<<" "<<0<<endl ;}}      
+                    }
+                    else if (j==end) //bord de droite fictif
+                    {
+                      for (int k=0 ; k<num_lines;k++) 
+                       {if (k==0){write_mesh<<j*delta_x<<" "<<k*delta_y<<" "<<0<<" "<<k+j*num_lines<<boundary_physical<<" "<<0<<endl ;}//bord haut
+                          else if (k==num_lines-1){write_mesh<<j*delta_x<<" "<<0<<" "<<k*delta_y<<" "<<boundary_physical<<4<<" "<<0<<endl ;}//bord bas
+                          else {write_mesh<<j*delta_x<<" "<<k*delta_y<<" "<<0<<" "<<k+j*num_lines<<boundary_fictional<<" "<<0<<endl ;}}  
+                    }
+                    else if (j==column_to_send_left) 
+                    {
+                      for (int k=0 ; k<num_lines;k++) 
+                        {if (k==0){write_mesh<<j*delta_x<<" "<<k*delta_y<<" "<<0<<" "<<k+j*num_lines<<" "<<boundary_physical<<" "<<1<<" "<<i-1<<endl ;}//bord haut
+                          else if (k==num_lines-1){write_mesh<<j*delta_x<<" "<<0<<" "<<k*delta_y<<" "<<k+j*num_lines<<" "<<boundary_physical<<" "<<1<<" "<<i-1<<endl ;}//bord haut
+                          else {write_mesh<<j*delta_x<<" "<<k*delta_y<<" "<<0<<" "<<k+j*num_lines<<" "<<inner_point<<" "<<1<<" "<<i-1<<endl ;}}  
+                    }
+                    else if (j==column_to_send_right) 
+                    {
+                      for (int k=0 ; k<num_lines;k++) 
+                        {if (k==0){write_mesh<<j*delta_x<<" "<<k*delta_y<<" "<<0<<" "<<k+j*num_lines<<" "<<boundary_physical<<" "<<1<<" "<<i+1<<endl ;}//bord haut
+                          else if (k==num_lines-1){write_mesh<<j*delta_x<<" "<<k*delta_y<<" "<<0<<" "<<k+j*num_lines<<" "<<boundary_physical<<" "<<1<<" "<<i+1<<endl ;}//bord haut
+                          else {write_mesh<<j*delta_x<<" "<<k*delta_y<<" "<<0<<" "<<k+j*num_lines<<" "<<inner_point<<" "<<1<<" "<<i+1<<endl ;}}  
+                    }
+                    else 
+                    {
+                        for (int k=0 ; k<num_lines;k++)
+                
+                          {if (k==0){write_mesh<<j*delta_x<<" "<<k*delta_y<<" "<<0<<" "<<k+j*num_lines<<" "<<boundary_physical<<" "<<0<<endl ;}//bord haut
+                          else if (k==num_lines-1){write_mesh<<j*delta_x<<" "<<k*delta_y<<" "<<0<<" "<<k+j*num_lines<<" "<<boundary_physical<<" "<<0<<endl ;}//bord haut
+                          else {write_mesh<<j*delta_x<<" "<<k*delta_y<<" "<<0<<" "<<k+j*num_lines<<" "<<inner_point<<" "<<0<<endl ;} }
+            
+                    }
+                   
+              }
+          
       } 
-    }
+          }
+  
   }
-
+/*
   bool compare_string(string str1 , string str2)
   {
     if (str1[0]==str2[0])
@@ -210,9 +260,10 @@
         return false;
       }
   }
-
+*/
   //taille indices_to_send_right ny ou 0 si rank = num_procs -1  
   //taille indices_to_send_left ny  ou 0 si rank = 0 
+  /*
   void read_mesh(int num_procs ,int num_proc , int* nx_local , int* indices_to_send_right , int* indices_to_send_left) 
   {
     string file_name ; 
@@ -259,4 +310,4 @@
         read_file>>indices_to_send_right[i] ;
       }
     }
-  }
+  }*/
