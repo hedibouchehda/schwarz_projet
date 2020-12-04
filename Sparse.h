@@ -18,6 +18,9 @@ public:
     int get_num_col(){return m_num_col;};
     double get_value(){return m_value;};
 };
+
+
+
 class SparseMatrix
 {
 private:
