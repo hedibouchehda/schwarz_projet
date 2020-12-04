@@ -2,14 +2,54 @@
 
 using namespace std;
 
-Triplets::Triplets (int num_rows, int num_cols)
+Triplet::Triplet(int num_row,int num_col,double value)
 {
-    m_num_rows      = num_rows;
-    m_num_cols      = num_cols;
-    m_triplets_size = 0;
-    m_entry_data    = (float *)calloc (m_num_rows * m_num_cols, sizeof (float));
-    m_IA            = (int *)calloc ((m_num_rows + 1), sizeof (int));
+    m_num_row = num_row;
+    m_num_col = num_col;
+    m_value = value;
 }
+void Triplet::reset(Triplet* triplet)
+{
+	m_num_row = triplet->get_num_row(); 
+	m_num_col = triplet->get_num_col(); 
+	m_value = triplet->get_value();
+}
+/*
+SparseMatrix::SparseMatrix(int num_rows,int num_cols)
+{
+	m_num_rows = num_rows; 
+	m_num_cols = num_cols;
+	m_list_of_triplets->resize(m_num_rows+1);
+}
+void SparseMatrix::add(int i,int j,double value)
+{
+	m_list_of_triplets->push_back(new triplet(i,j,value));
+}
+void SparseMatrix::ranging() 
+{
+	for (int i=0;i<m_list_of_triplets->size();i++)
+	{
+		m_IA[m_list_of_triplets[i]->get_num_row()++]++;
+		Triplet* min_triplet = new Triplet(m_list_of_triplets[0]);
+		for (int j=i+1;j<m_list_of_triplets->size();j++)
+		{
+			if (m_list_of_triplets[j]->get_num_row()<min_triplet->get_num_()) 
+			{
+				min_triplet = m_list_of_triplets[j]; 
+				m_list_of_triplets[j] = m_list_of_triplets[i];
+			}
+		} 
+		m_list_of_triplets[i] = min_triplet;
+	}
+}
+/*
+void 
+
+
+
+
+
+
 
 void
 Triplets::add (int i, int j, float values)
@@ -70,7 +110,7 @@ Triplets::ranging ()
     ;
     cout << "****" << endl;
 }
-
+/*
 void
 Triplets::settriplet ()
 {
@@ -118,8 +158,8 @@ Triplets::settriplet ()
     {
         cout<<m_values[i]<<endl ; 
     }
-    */
-}
+   */
+/*}
 
 SparseMatrix::SparseMatrix (int num_rows, int num_cols)
 {
@@ -154,7 +194,7 @@ SparseMatrix::set_matrix ()
   }
  */
 }
-
+/*
 float *
 SparseMatrix::vector_mult (float * x)
 {

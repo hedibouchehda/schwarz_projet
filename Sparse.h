@@ -1,109 +1,71 @@
 #include <stdio.h>
 #include <stdlib.h>
-
 #include <algorithm>
 #include <cmath>
 #include <iostream>
 #include <vector>
 
-class Triplets
+class Triplet
 {
 private:
-    int     m_num_cols, m_num_rows;
-    int     m_triplets_size;
-    float * m_entry_data;
-    int *   m_IA;
-    int *   m_IJ;
-    float * m_values;
-
+    int 		m_num_row , m_num_col; 
+	double 		m_value; 
 public:
-    Triplets (){};
-    Triplets (int m_num_rows, int m_num_cols);
-    void add (int i, int j, float value);
-    void settriplet ();
-    int *
-    get_m_IA ()
-    {
-        return m_IA;
-    };
-    int *
-    get_m_IJ ()
-    {
-        return m_IJ;
-    };
-    float *
-    get_m_values ()
-    {
-        return m_values;
-    };
-    void ranging ();
-    void show ();
+    Triplet(int,int,double);
+    Triplet(){}; 
+    void reset(Triplet*);
+    int get_num_row(){return m_num_row;}; 
+    int get_num_col(){return m_num_col;};
+    double get_value(){return m_value;};
 };
-
 class SparseMatrix
 {
 private:
-    int        m_num_rows, m_num_cols;
-    Triplets * Triplet;
-    float *    m_values;
-    int *      m_IA;
-    int *      m_IJ;
-
+    int 							m_num_rows, m_num_cols;
+    std::vector<Triplet*> 		    m_list_of_triplets;
+    std::vector<double>    		    m_values;
+    std::vector<int>      			m_IA,m_JA;  
 public:
-    SparseMatrix (int number_rows, int number_columns);
-    void    add_value (int i, int j, float value);
-    void    set_matrix ();
-    float * vector_mult (float * vect);
-    int
-    get_rows_number ()
-    {
-        return m_num_rows;
-    };
-    int
-    get_cols_number ()
-    {
-        return m_num_cols;
-    };
+    SparseMatrix(int,int);
+    void add(int,int,double);
+    void set_matrix();
+    void ranging();
+    double* vector_mult(double*);
+    int get_num_rows(){return m_num_rows;};
+    int get_num_cols(){return m_num_cols;};
 };
-
+/*
 class CG_solver
 {
 private:
-    SparseMatrix * m_A;
-    float *        m_X;
-    float *        m_b;
-    float          tolerance;
-    int            num_iteration_max;
-
+    SparseMatrix* 				 m_A;
+    double*                      m_X;
+    double*                      m_b;
+    double          			tolerance;
+    int            				num_iteration_max;
 public:
-    CG_solver (SparseMatrix *, float *);
-    void solve ();
-    float *
-    get_solution ()
-    {
-        return m_b;
-    };
+    CG_solver(SparseMatrix*,std::vector<double&>);
+    void solve();
+    std::vector<double>* get_solution(){return m_b;};
 };
+* /
+/*
 class BICGSTAB_solver
 {
 private:
-    SparseMatrix * m_A;
-    float *        m_X;
-    float *        m_b;
-    float          tolerance;
-    int            num_iteration_max;
-
+    SparseMatrix* 				 m_A;
+    std::vector<double>*         m_X;
+    std::vector<double>*         m_b;
+    double                      tolerance;
+    int                         num_iteration_max;
 public:
-    BICGSTAB_solver (SparseMatrix *, float *);
-    void solve ();
-    float *
-    get_solution ()
-    {
-        return m_b;
-    };
+    BICGSTAB_solver(SparseMatrix*,std::vector<double>*);
+    void solve();
+    std::vector<double>* get_solution(){return m_b;};
 };
+double dot_product (std::vector<double>*,std::vector<double>*);
+std::vector<double>* vect_sum (std::vector<double>*,std::vector<double>*);
+std::vector<double>* dot_real_vect (double,std::vector<double>*);
+double norm(std::vector<double>*);
 
-float   dot_product (int, float *, float *);
-float * vect_sum (int, float *, float *);
-float * dot_real_vect (int, float *);
-float   norm (int, float *);
+*/
