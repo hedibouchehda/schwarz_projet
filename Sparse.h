@@ -32,26 +32,34 @@ public:
     SparseMatrix(int,int);
     void add(int,int,double);
     void set_matrix();
-    void ranging();
-    double* vector_mult(double*);
+    void print_verification();
+    void ranging(); 
+    void set();
+    std::vector<double> vector_mult(std::vector<double>&);
     int get_num_rows(){return m_num_rows;};
     int get_num_cols(){return m_num_cols;};
 };
-/*
+
 class CG_solver
 {
 private:
-    SparseMatrix* 				 m_A;
-    double*                      m_X;
-    double*                      m_b;
-    double          			tolerance;
-    int            				num_iteration_max;
+    SparseMatrix* 				m_A;
+    std::vector<double>         m_X;
+    std::vector<double>         m_b;
+    double          			m_tolerance;
+    double                      m_precison; 
+    int            				m_num_iteration_max;
+    int                         m_num_iteration; 
+    
 public:
-    CG_solver(SparseMatrix*,std::vector<double&>);
+    CG_solver();
+    CG_solver(int,double);
+    void set_problem(SparseMatrix*,std::vector<double>&);
     void solve();
-    std::vector<double>* get_solution(){return m_b;};
+    std::vector<double> get_solution(){return m_b;};
+    void details(); 
 };
-* /
+
 /*
 class BICGSTAB_solver
 {
@@ -66,9 +74,10 @@ public:
     void solve();
     std::vector<double>* get_solution(){return m_b;};
 };
-double dot_product (std::vector<double>*,std::vector<double>*);
-std::vector<double>* vect_sum (std::vector<double>*,std::vector<double>*);
-std::vector<double>* dot_real_vect (double,std::vector<double>*);
-double norm(std::vector<double>*);
-
 */
+double dot_product (std::vector<double>&,std::vector<double>&);
+std::vector<double> vect_sum(std::vector<double>&,std::vector<double>&);
+std::vector<double> dot_real_vect (double,std::vector<double>&);
+double norm(std::vector<double>&);
+
+

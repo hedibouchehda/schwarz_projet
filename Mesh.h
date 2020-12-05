@@ -20,7 +20,6 @@ class Point
       int get_num_tags(){return m_num_tags;}; 
       std::vector<int> get_procs_2_send(){return m_send_2_procs;};   
 };
-
 class Mesh
 {
     private:
