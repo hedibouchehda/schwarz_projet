@@ -3,7 +3,7 @@ nx
 ny
 101
 num_procs
-2
+3
 recovery
 10
 physical_boundaries

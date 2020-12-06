@@ -1,38 +1,49 @@
-#include "Mesh.h"
+#include "Mesh.h" 
 
-
-void Point::set_point(std::vector<double> coords, std::vector<int> send_2_procs, int global_num, int label, int num_tags)
+Point::Point(double coord_x,double coord_y,int global_num,int label,int num_tags,int to_send,int to_receive)
 {
-    m_coords = coords; 
-    m_send_2_procs = send_2_procs; 
-    m_global_num = global_num; 
-    m_label = label; 
-    m_num_tags = num_tags;    
+  m_coords.push_back(coord_x); 
+  m_coords.push_back(coord_y); 
+  m_global_num = global_num; 
+  m_label = label;
+  m_num_tags = num_tags; 
+  m_to_send = to_send; 
+  m_to_receive = to_receive; 
 }
-
-Mesh::Mesh(std::string input_file) 
+Mesh::Mesh(std::string input_file)
 {
-    m_input_file = input_file; 
+  m_input_file = input_file; 
 }
-
 void Mesh::read_mesh() 
 {
-    std::ifstream read(m_input_file.c_str()); 
-    Point* point = new Point ; 
-    read>>m_num_of_elements;
-    std::vector<int> send_2_procs; 
-    std::vector<double> coords;
-    coords.resize(3);
-    int global_num, label, num_tags;
-    for (int i=0; i<m_num_of_elements; i++) 
+  std::ifstream read(m_input_file.c_str());
+  read>>m_num_of_elements; 
+  double coord_x,coord_y,coord_z; 
+  int num_global,label,num_tags;
+  int tag; 
+  for (int i=0;i<m_num_of_elements;i++)
+  {
+    read>>coord_x; 
+    read>>coord_y; 
+    read>>coord_z; 
+    read>>num_global; 
+    read>>label; 
+    read>>num_tags;
+    //TODO : add Neumann conditions handeling 
+    if (num_tags != 0)
     {
-      read>>coords[0]>>coords[1]>>coords[2]>>global_num>>label>>num_tags ; 
-      if (num_tags==1)
+      if (label == 7)
       {
-        send_2_procs.resize(1); 
-        read>>send_2_procs[0];    
-      } 
-      point->set_point(coords, send_2_procs, global_num, label, num_tags); 
-      list_of_points.push_back(point); 
-    } 
+        read>>tag;
+        m_list_of_points.push_back(new Point(coord_x,coord_y,num_global,label,num_tags,-1,tag)); 
+      }
+      else if (label == 0)
+      {
+        read>>tag;
+        m_list_of_points.push_back(new Point(coord_x,coord_y,num_global,label,num_tags,tag,-1));
+      }
+    }
+    else 
+      m_list_of_points.push_back(new Point(coord_x,coord_y,num_global,label,num_tags,-1,-1));
+  } 
 }

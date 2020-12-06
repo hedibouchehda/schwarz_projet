@@ -1,5 +1,7 @@
 #include "Sparse.h"
-
+#include "partitions.h"
+#include "Mesh.h"
+/*
 int main()
 {
 	std::vector<Triplet*> list; 
@@ -46,15 +48,26 @@ int main()
 	solver->set_problem(sm,vect);
 	solver->solve();	
 }
+*/
 /*
 int main() 
-{
-	std::vector<double> ss,sa,res; 
-	ss.resize(2);
-	sa.resize(2);
+{tif
+                    {
+                      for (int k=0 ; k<num_lines; k++) 
+                        {if (k==0){write_mesh<<j*delta_x<<" "<<k*delta_y<<" "<<0<<" "<<k+j*num_lines<<" "<<boundary_physical<<" "<<0<<endl ;}//bord haut
+                          else if (k==num_lines-1){write_mesh<<j*delta_x<<" "<<k*delta_y<<" "<<0<<" "<<k+j*num_lines<<" "<<boundary_physical<<" "<<0<<endl ;}//bord bas
+                          else {write_mesh<<j*delta
 	ss[0] = 1; 
 	ss[1] = 2; 
 	res = vect_sum(ss,sa);
 
 }
 */
+
+int main()
+{	
+	build_meshes("input.txt");
+	Mesh* mesh = new Mesh("proc_num_0.In");
+	mesh->read_mesh();
+	return 0;
+}

@@ -18,9 +18,6 @@ public:
     int get_num_col(){return m_num_col;};
     double get_value(){return m_value;};
 };
-
-
-
 class SparseMatrix
 {
 private:
@@ -39,7 +36,6 @@ public:
     int get_num_rows(){return m_num_rows;};
     int get_num_cols(){return m_num_cols;};
 };
-
 class CG_solver
 {
 private:
@@ -59,7 +55,6 @@ public:
     std::vector<double> get_solution(){return m_b;};
     void details(); 
 };
-
 /*
 class BICGSTAB_solver
 {

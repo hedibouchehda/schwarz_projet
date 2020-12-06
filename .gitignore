@@ -1,3 +1,4 @@
 *.In
 *.exe
 *.out
+*.cpp~
