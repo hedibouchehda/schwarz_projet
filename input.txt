@@ -1,6 +1,10 @@
-nx
+Lx
+1.
+Ly
+1.
+num_lines
 101
-ny
+num_cols
 101
 num_procs
 3

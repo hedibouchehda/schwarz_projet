@@ -66,10 +66,15 @@
       int num_cols ; 
       int num_lines ; 
       int recovery_size ; 
+      double Lx,Ly;
       string label ;
       
       if(read_input)
       {
+          read_input>>label; 
+          read_input>>Lx; 
+          read_input>>label; 
+          read_input>>Ly;
           read_input>>label ; 
           read_input>>num_lines ; 
           read_input>>label ;
@@ -88,9 +93,9 @@
           cout<<"ERROR: can't open file"<<endl ;
       }
 
-      float delta_x , delta_y ;
-      delta_x = 1./(num_cols-1) ;
-      delta_y = 1./(num_lines-1) ; 
+      double delta_x , delta_y ;
+      delta_x = Lx/(num_cols-1) ;
+      delta_y = Ly/(num_lines-1) ; 
 
       int* boundary_global_indices=new int[2*num_procs] ; 
       
