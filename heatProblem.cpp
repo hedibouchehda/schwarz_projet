@@ -8,7 +8,7 @@ HeatProblem::HeatProblem(std::string input_problem,std::string mesh_file_name,in
 }
 void HeatProblem::set_mesh()
 {
-    m_mesh  = new Mesh(m_mesh_file_name); 
+    m_mesh  = new Mesh(m_mesh_file_name); //add .c-str
     m_mesh->read_mesh();
 }
 void HeatProblem::set_params()
