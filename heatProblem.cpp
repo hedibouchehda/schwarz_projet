@@ -42,8 +42,8 @@ void HeatProblem::set_problem()
 void HeatProblem::build_matrix()
 {
     double diagonal_value = 1 + 2*m_D*m_delta_t*(1./pow(m_delta_x,2) + 1./pow(m_delta_y,2));
-    double same_col_value = -m_delta_t*m_D/pow(m_delta_x,2); 
-    double different_col_value = -m_delta_t*m_D/pow(m_delta_y,2);
+    double same_col_value = -m_delta_t*m_D/pow(m_delta_y,2); 
+    double different_col_value = -m_delta_t*m_D/pow(m_delta_x,2);
     int size = m_mesh->get_num_of_elements(); 
     m_matrix = new SparseMatrix(size,size); 
     std::vector<Point*> list_of_points = m_mesh->get_list_of_points(); 
