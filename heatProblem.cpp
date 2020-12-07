@@ -134,7 +134,7 @@ void HeatProblem::build_second_member(double t)
             }
         }
         else //inner points 
-            m_second_member.push_back(second_member_physical_function(coords[0],coords[1],t)+m_u1[i]);
+            m_second_member.push_back(second_member_physical_function(coords[0],coords[1],t)+m_u1[i]);//add delat
     }
 }
 void HeatProblem::prepare_sending()
