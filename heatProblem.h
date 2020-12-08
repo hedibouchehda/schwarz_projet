@@ -20,6 +20,7 @@ class HeatProblem
         void set_mesh(); 
         void set_params(); 
         void set_problem();
+        void initialize();
         void build_matrix();
         void get_received_values(std::vector<double>&,std::vector<double>&);
         double boundary_physical_function(double,double); 

@@ -17,6 +17,7 @@ class Point
       Point(double coord_x,double coord_y,int global_num,int label,int num_tags,int to_send,int to_receive);  
       void set_inner_point();
       std::vector<double> get_coords(){return m_coords;}; 
+      int get_global_num(){return m_global_num;};
       int get_label(){return m_label;}; 
       int get_num_tags(){return m_num_tags;}; 
       int get_to_send(){return m_to_send;};

@@ -35,15 +35,15 @@ void Mesh::read_mesh()
       if (label == 7)
       {
         read>>tag;
-        m_list_of_points.push_back(new Point(coord_x,coord_y,num_global,label,num_tags,-1,tag)); 
+        m_list_of_points.push_back(new Point(coord_x,coord_y,num_global,label,num_tags,-10,tag)); 
       }
       else if (label == 0)
       {
         read>>tag;
-        m_list_of_points.push_back(new Point(coord_x,coord_y,num_global,label,num_tags,tag,-1));
+        m_list_of_points.push_back(new Point(coord_x,coord_y,num_global,label,num_tags,tag,-10));
       }
     }
     else 
-      m_list_of_points.push_back(new Point(coord_x,coord_y,num_global,label,num_tags,-1,-1));
+      m_list_of_points.push_back(new Point(coord_x,coord_y,num_global,label,num_tags,-10,-10));
   } 
 }

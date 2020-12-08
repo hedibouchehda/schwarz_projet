@@ -1,6 +1,9 @@
+
+/*
 #include "Sparse.h"
 #include "partitions.h"
 #include "Mesh.h"
+*/
 /*
 int main()
 {
@@ -63,11 +66,46 @@ int main()
 
 }
 */
-
+/*
 int main()
 {	
 	build_meshes("input.txt");
 	Mesh* mesh = new Mesh("proc_num_0.In");
 	mesh->read_mesh();
 	return 0;
+}
+*/
+
+//#include "Mesh.h"
+#include "heatProblem.h" 
+
+int main()
+{
+	/* verification point class
+	std::vector<double> coords; 
+	Point* pt = new Point(1.2,2.2,50,0,1,-1,3);
+	coords = pt->get_coords() ;
+	std::cout<<coords[0]<<" "<<coords[1]<<" "<<pt->get_global_num()<<" "<<pt->get_label()<<" "<<pt->get_num_tags()<<" "
+				<<pt->get_to_send()<<" "<<pt->get_to_receive()<<std::endl;
+	*/
+/*
+std::vector<Point*> list_of_points; 
+Mesh* mesh = new Mesh("testing.txt");
+mesh->read_mesh(); 
+std::cout<<mesh->get_num_of_elements()<<std::endl;
+list_of_points = mesh->get_list_of_points(); 
+for (int i=0;i<list_of_points.size();i++) 
+	{
+	std::vector<double> coords; 
+	coords = list_of_points[i]->get_coords();
+	std::cout<<coords[0]<<" "<<coords[1]<<" "<<list_of_points[i]->get_global_num()<<" "<<list_of_points[i]->get_label()<<" "<<list_of_points[i]->get_num_tags()<<" "
+				<<list_of_points[i]->get_to_send()<<" "<<list_of_points[i]->get_to_receive()<<std::endl;
+	}
+*/
+	HeatProblem* hp = new HeatProblem("input_problem.txt","proc_num_0.In",0);
+	hp->set_problem(); 
+	hp->initialize();
+	hp->build_matrix();
+	hp->build_second_member(0.01);
+
 }

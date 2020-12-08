@@ -8,8 +8,9 @@ HeatProblem::HeatProblem(std::string input_problem,std::string mesh_file_name,in
 }
 void HeatProblem::set_mesh()
 {
-    m_mesh  = new Mesh(m_mesh_file_name); //add .c-str
+    m_mesh  = new Mesh(m_mesh_file_name.c_str()); 
     m_mesh->read_mesh();
+    //std::cout<<m_mesh->get_num_of_elements()<<std::endl;
 }
 void HeatProblem::set_params()
 {
@@ -33,6 +34,7 @@ void HeatProblem::set_params()
     m_delta_x = m_Lx/(num_cols_global-1); 
     m_delta_y = m_Ly/(num_lines_global-1);  
     m_size_of_col = num_lines_global;
+    //std::cout<<m_Lx<<" "<<m_Ly<<" "<<m_studied_case<<" "<<num_lines_global<<" "<<num_cols_global<<" "<<m_D<<" "<<m_delta_t<<std::endl;
 }
 void HeatProblem::set_problem()
 {
@@ -63,6 +65,7 @@ void HeatProblem::build_matrix()
         }
     }
     m_matrix->set();
+    //m_matrix->print_verification();
 }
 double HeatProblem::second_member_physical_function(double x,double y,double t)
 {
@@ -114,10 +117,12 @@ void HeatProblem::build_second_member(double t)
     int index_received_right(0),index_received_left(0); 
     std::vector<double> coords; 
     int label; 
-    for (int i=0;list_of_points.size();i++)
+    for (int i=0;i<list_of_points.size();i++)
     {
+        
         coords = list_of_points[i]->get_coords();
         label = list_of_points[i]->get_label();
+        
         if (label==5)//physical dirichlet   
             m_second_member.push_back(boundary_physical_function(coords[0],coords[1])); 
         else if (label==7)//fictional dirichlet
@@ -132,9 +137,9 @@ void HeatProblem::build_second_member(double t)
                 m_second_member.push_back(m_to_receive_right[index_received_right]); 
                 index_received_right++; 
             }
-        }
+        }  
         else //inner points 
-            m_second_member.push_back(second_member_physical_function(coords[0],coords[1],t)+m_u1[i]);//add delat
+            m_second_member.push_back(second_member_physical_function(m_delta_t*coords[0],coords[1],t)+m_u1[i]);
     }
 }
 void HeatProblem::prepare_sending()
@@ -150,4 +155,22 @@ void HeatProblem::prepare_sending()
                 m_to_send_left.push_back(m_u1[i]); 
         }
     }   
+}
+void HeatProblem::initialize()
+{
+    std::vector<Point*> list_of_points = m_mesh->get_list_of_points();
+    int size = m_mesh->get_num_of_elements();
+    std::vector<double> coords; 
+    m_to_receive_left.resize(m_size_of_col-2); 
+    m_to_receive_right.resize(m_size_of_col-2);
+    for (int i=0;i<size;i++)
+    {
+        coords = list_of_points[i]->get_coords(); 
+        if (list_of_points[i]->get_label() == 5)
+            m_u1.push_back(boundary_physical_function(coords[0],coords[1])); 
+        else 
+        {
+            m_u1.push_back(0.0); 
+        }
+    } 
 }
