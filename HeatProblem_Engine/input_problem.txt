@@ -1,0 +1,14 @@
+Lx
+1
+Ly
+1
+case
+3
+num_lines
+101
+num_cols
+101
+D
+1
+delta_t
+0.01

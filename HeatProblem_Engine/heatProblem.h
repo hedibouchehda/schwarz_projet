@@ -1,5 +1,5 @@
-#include "Mesh.h"
-#include "Sparse.h" 
+#include "../Mesh_Engine/Mesh.h"
+#include "../SparseMatrix_Engine/Sparse.h" 
 
 class HeatProblem
 {

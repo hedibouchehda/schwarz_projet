@@ -77,7 +77,7 @@ int main()
 */
 
 //#include "Mesh.h"
-#include "heatProblem.h" 
+#include "../HeatProblem_Engine/heatProblem.h" 
 
 int main()
 {
@@ -102,7 +102,7 @@ for (int i=0;i<list_of_points.size();i++)
 				<<list_of_points[i]->get_to_send()<<" "<<list_of_points[i]->get_to_receive()<<std::endl;
 	}
 */
-	HeatProblem* hp = new HeatProblem("input_problem.txt","proc_num_0.In",0);
+	HeatProblem* hp = new HeatProblem("input_problem.txt","proc_num_1.In",1);
 	hp->set_problem(); 
 	hp->initialize();
 	hp->build_matrix();

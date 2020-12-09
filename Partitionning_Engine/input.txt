@@ -1,7 +1,7 @@
 Lx
-1.
+1
 Ly
-1.
+1
 num_lines
 101
 num_cols
@@ -9,8 +9,8 @@ num_cols
 num_procs
 3
 recovery
-10
-physical_boundaries
+4
+physical_boundary
 5
-fictional_boundaries 
+fictional_boundary
 7
